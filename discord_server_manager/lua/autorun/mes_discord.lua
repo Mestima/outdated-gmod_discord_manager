@@ -1,4 +1,3 @@
-
 if SERVER then
 MDiscord = {}
 MDiscord.settings = {}
