@@ -4,7 +4,7 @@ MDiscord.settings = {}
 
 function MDiscord:Init()
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
-	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt","") end
+	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt", self.settings) end
 	
 	self.settings = util.JSONToTable(file.Read("mestima_save/discord.txt","DATA"))
 end
