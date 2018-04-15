@@ -16,8 +16,13 @@ Done!
 You should set it up ONLY ONE time!
 
 Command list:
+
 discord_help -- shows addons set up help
+
 discord_copyright -- shows author's copyright
+
 discord_gm_sandbox -- set up sandbox gamemode to discord manager
+
 discord_gm_darkrp -- set up darkrp gamemode to discord manager
+
 discord_set_url -- set up discord webhook url
