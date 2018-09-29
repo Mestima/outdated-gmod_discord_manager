@@ -6,15 +6,15 @@ MDiscord.storage = {}
 MDiscord.storage.received = {}
 MDiscord.storage.lastMsg = 1
 
-function MDiscord:Init()
+local function Init()
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
 	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage)) end
 	
 	self.storage = util.JSONToTable(file.Read("mestima_save/discord.txt","DATA"))
-	timer.Create("DiscordMessageGetter", 3, 0, function() if not MDiscord.storage.token or not MDiscord.storage.channel then return end MDiscord:GetMessages() end)
+	timer.Create("DiscordMessageGetter", 3, 0, function() if not MDiscord.storage.token or not MDiscord.storage.channel then return end GetMessages() end)
 end
 
-function MDiscord:UpdateURL(url)
+local function UpdateURL(url)
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
 	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt","") end
 	
@@ -22,7 +22,7 @@ function MDiscord:UpdateURL(url)
 	file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage))
 end
 
-function MDiscord:UpdateMODE(gamemode)
+local function UpdateMODE(gamemode)
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
 	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt","") end
 	
@@ -30,7 +30,7 @@ function MDiscord:UpdateMODE(gamemode)
 	file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage))
 end
 
-function MDiscord:UpdateToken(token)
+local function UpdateToken(token)
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
 	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt","") end
 	
@@ -38,7 +38,7 @@ function MDiscord:UpdateToken(token)
 	file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage))
 end
 
-function MDiscord:UpdateChannel(channel)
+local function UpdateChannel(channel)
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
 	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt","") end
 	
@@ -46,7 +46,7 @@ function MDiscord:UpdateChannel(channel)
 	file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage))
 end
 
-function MDiscord:RPSend(ply, text, team)
+local function RPSend(ply, text, team)
 	local msg = text
 	if string.len(msg) < 4 then return end
 	if string.sub(msg,1,3) == "///" then return end
@@ -65,7 +65,7 @@ function MDiscord:RPSend(ply, text, team)
 	end
 end
 
-function MDiscord:SandboxSend(ply, text, team)
+local function SandboxSend(ply, text, team)
 	local msg = text
 	local name = ""
 	
@@ -76,7 +76,7 @@ function MDiscord:SandboxSend(ply, text, team)
 	http.Post("https://" .. self.storage.url, {content = msg, username = name})
 end
 
-function MDiscord.GetFromDiscord(body,len,headers,code)
+local function GetFromDiscord(body,len,headers,code)
 	local content = util.JSONToTable(body)
 	for i = MDiscord.storage.lastMsg, #content do
 		if content[i].author.bot == true then goto skip end
@@ -95,19 +95,19 @@ function MDiscord.GetFromDiscord(body,len,headers,code)
 	end
 end
 
-function MDiscord:GetMessages()
-	http.Fetch("https://discordapp.com/api/channels/" .. self.storage.channel .. "/messages?token=".. self.storage.token, self.GetFromDiscord)
+local function GetMessages()
+	http.Fetch("https://discordapp.com/api/channels/" .. self.storage.channel .. "/messages?token=".. self.storage.token, GetFromDiscord)
 end
 
-hook.Add("Initialize", "MDiscordInit", function() MDiscord:Init() end)
-hook.Add("PlayerSay", "MDiscordSend", function(ply, text, team) if MDiscord.storage.gm == "darkrp" then MDiscord:RPSend(ply, text, team) else MDiscord:SandboxSend(ply, text, team) end end)
+hook.Add("Initialize", "MDiscordInit", function() Init() end)
+hook.Add("PlayerSay", "MDiscordSend", function(ply, text, team) if MDiscord.storage.gm == "darkrp" then RPSend(ply, text, team) else SandboxSend(ply, text, team) end end)
 
 concommand.Add("discord_set_url", function(ply, cmd, args)
 	if ply:IsSuperAdmin() == false then return end
 	local a = args
 	local url = ""
 	for k,v in pairs(a) do url = url .. v end
-	MDiscord:UpdateURL(url)
+	UpdateURL(url)
 end)
 
 concommand.Add("discord_gm_darkrp", function(ply, cmd, args)
@@ -127,7 +127,7 @@ concommand.Add("discord_set_token", function(ply, cmd, args)
 	local a = args
 	local token = ""
 	for k,v in pairs(a) do token = token .. v end
-	MDiscord:UpdateToken(token)
+	UpdateToken(token)
 end)
 
 concommand.Add("discord_set_channel", function(ply, cmd, args)
@@ -135,5 +135,5 @@ concommand.Add("discord_set_channel", function(ply, cmd, args)
 	local a = args
 	local channel = ""
 	for k,v in pairs(a) do channel = channel .. v end
-	MDiscord:UpdateChannel(channel)
+	UpdateChannel(channel)
 end)
