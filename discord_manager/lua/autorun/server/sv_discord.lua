@@ -8,9 +8,9 @@ MDiscord.storage.lastMsg = 1
 
 local function Init()
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
-	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage)) end
+	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt", util.TableToJSON(MDiscord.storage)) end
 	
-	self.storage = util.JSONToTable(file.Read("mestima_save/discord.txt","DATA"))
+	MDiscord.storage = util.JSONToTable(file.Read("mestima_save/discord.txt","DATA"))
 	timer.Create("DiscordMessageGetter", 3, 0, function() if not MDiscord.storage.token or not MDiscord.storage.channel then return end GetMessages() end)
 end
 
@@ -18,32 +18,32 @@ local function UpdateURL(url)
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
 	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt","") end
 	
-	self.storage.url = tostring(url)
-	file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage))
+	MDiscord.storage.url = tostring(url)
+	file.Write("mestima_save/discord.txt", util.TableToJSON(MDiscord.storage))
 end
 
 local function UpdateMODE(gamemode)
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
 	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt","") end
 	
-	self.storage.gm = tostring(gamemode)
-	file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage))
+	MDiscord.storage.gm = tostring(gamemode)
+	file.Write("mestima_save/discord.txt", util.TableToJSON(MDiscord.storage))
 end
 
 local function UpdateToken(token)
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
 	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt","") end
 	
-	self.storage.token = tostring(token)
-	file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage))
+	MDiscord.storage.token = tostring(token)
+	file.Write("mestima_save/discord.txt", util.TableToJSON(MDiscord.storage))
 end
 
 local function UpdateChannel(channel)
 	if not file.Exists("mestima_save","DATA") then file.CreateDir("mestima_save") end
 	if not file.Exists("mestima_save/discord.txt","DATA") then file.Write("mestima_save/discord.txt","") end
 	
-	self.storage.channel = tostring(channel)
-	file.Write("mestima_save/discord.txt", util.TableToJSON(self.storage))
+	MDiscord.storage.channel = tostring(channel)
+	file.Write("mestima_save/discord.txt", util.TableToJSON(MDiscord.storage))
 end
 
 local function RPSend(ply, text, team)
@@ -61,7 +61,7 @@ local function RPSend(ply, text, team)
 		if ply:Alive() == false then name = name .. "*DEAD* " end
 		name = name .. ply:Nick()
 	
-		http.Post("https://" .. self.storage.url, {content = msg, username = name})
+		http.Post("https://" .. MDiscord.storage.url, {content = msg, username = name})
 	end
 end
 
@@ -73,7 +73,7 @@ local function SandboxSend(ply, text, team)
 	if ply:Alive() == false then name = name .. "*DEAD* " end
 	name = name .. ply:Nick()
 	
-	http.Post("https://" .. self.storage.url, {content = msg, username = name})
+	http.Post("https://" .. MDiscord.storage.url, {content = msg, username = name})
 end
 
 local function GetFromDiscord(body,len,headers,code)
@@ -96,7 +96,7 @@ local function GetFromDiscord(body,len,headers,code)
 end
 
 local function GetMessages()
-	http.Fetch("https://discordapp.com/api/channels/" .. self.storage.channel .. "/messages?token=".. self.storage.token, GetFromDiscord)
+	http.Fetch("https://discordapp.com/api/channels/" .. MDiscord.storage.channel .. "/messages?token=".. MDiscord.storage.token, GetFromDiscord)
 end
 
 hook.Add("Initialize", "MDiscordInit", function() Init() end)
