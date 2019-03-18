@@ -1,4 +1,4 @@
-#[OUTDATED] Do NOT install this addon.
+# [OUTDATED] Do NOT install this addon.
 
 # gmod_discord_manager
 It is simple tool to send messages from Gmod server chat to your discord server.
